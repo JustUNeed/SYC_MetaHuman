@@ -1,0 +1,152 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        <!-- 修复：将 using: 改为 clr-namespace: 正确格式 -->
+        xmlns:vm="clr-namespace:SYC_AssetSystem.ViewModels"
+        xmlns:models="clr-namespace:SYC_AssetSystem.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        <!-- 移除重复的 xmlns:x 声明 -->
+        <!-- 修复：Interactivity 命名空间正确写法 -->
+        xmlns:interactivity="clr-namespace:Avalonia.Interactivity;assembly=Avalonia"
+        mc:Ignorable="d" 
+        d:DesignWidth="800" 
+        d:DesignHeight="450"
+        x:Class="SYC_AssetSystem.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SYC_AssetSystem">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="{Binding Greeting}" 
+                   Grid.Row="0" 
+                   Grid.ColumnSpan="2" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15" 
+                   FontSize="18" 
+                   FontWeight="Bold"/>
+
+        <Border Grid.Row="1" 
+                Grid.Column="0" 
+                BorderBrush="Gray" 
+                BorderThickness="1" 
+                Margin="5" 
+                CornerRadius="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="文件夹结构" 
+                           Grid.Row="0" 
+                           Background="LightGray" 
+                           Padding="5" 
+                           FontWeight="Bold"/>
+                <TreeView Grid.Row="1" 
+                          ItemsSource="{Binding RootNode.Children}" 
+                          Margin="5">
+                    <TreeView.DataTemplates>
+                        <!-- 修复：DataType 使用 {x:Type} 标记 -->
+                        <TreeDataTemplate DataType="{x:Type models:FolderTreeNode}" 
+                                          ItemsSource="{Binding Children}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Grid.Column="0"
+                                      Data="M0,0 L0,10 L5,5 Z"
+                                      Fill="Black"
+                                      Margin="0,0,5,0"
+                                      IsVisible="{Binding IsDirectory}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" />
+                            </Grid>
+                            <TreeDataTemplate.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnNodeTapped"/>
+                            </TreeDataTemplate.GestureRecognizers>
+                        </TreeDataTemplate>
+                    </TreeView.DataTemplates>
+                </TreeView>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" 
+                Grid.Column="1" 
+                BorderBrush="Gray" 
+                BorderThickness="1" 
+                Margin="5" 
+                CornerRadius="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!-- 修复：新增行来分离按钮、进度条和列表，避免布局重叠 -->
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>    <!-- 按钮行 -->
+                    <RowDefinition Height="5"/>       <!-- 进度条行 -->
+                    <RowDefinition Height="*"/>       <!-- 列表行 -->
+                </Grid.RowDefinitions>
+                <TextBlock Text="搜索功能" 
+                           Grid.Row="0" 
+                           Background="LightGray" 
+                           Padding="5" 
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="搜索内容:" 
+                           Grid.Row="1" 
+                           VerticalAlignment="Center" 
+                           Margin="10,5"/>
+                <TextBox x:Name="SearchTextBox" 
+                         Grid.Row="2" 
+                         Text="{Binding SearchText}" 
+                         Margin="10,5"/>
+
+                <TextBlock Text="搜索目录:" 
+                           Grid.Row="3" 
+                           VerticalAlignment="Center" 
+                           Margin="10,5"/>
+                <TextBox x:Name="PathTextBox" 
+                         Grid.Row="4" 
+                         Text="{Binding SearchPath}" 
+                         Margin="10,5"/>
+
+                <!-- 修复：按钮移到新行 Grid.Row="5" -->
+                <Button Content="搜索" 
+                        Grid.Row="5" 
+                        HorizontalAlignment="Center" 
+                        Padding="20,5" 
+                        Command="{Binding SearchCommand}" 
+                        Margin="0,10"/>
+
+                <!-- 修复：进度条移到新行 Grid.Row="6" -->
+                <ProgressBar Grid.Row="6" 
+                             IsIndeterminate="True" 
+                             IsVisible="{Binding IsSearching}" 
+                             Margin="10,0" 
+                             Height="5"/>
+
+                <!-- 修复：列表移到新行 Grid.Row="7" -->
+                <ScrollViewer Grid.Row="7" 
+                              HorizontalAlignment="Stretch" 
+                              VerticalAlignment="Stretch" 
+                              Margin="10">
+                    <ListBox ItemsSource="{Binding SearchResults}" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
