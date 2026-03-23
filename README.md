@@ -31,15 +31,12 @@ SYC Asset System 是一款基于 .NET 8 与 Avalonia 框架开发的桌面端资
 资产目录日常维护与辅助查询
 
 
-关键信息：
-
-TargetFramework = net8.0
-OutputType = WinExe
 使用 Avalonia 相关包：
 Avalonia
 Avalonia.Desktop
 Avalonia.Themes.Fluent
 Avalonia.Fonts.Inter
 Avalonia.Diagnostics
+
 使用 CommunityToolkit.Mvvm
 使用 EverythingNetCore
